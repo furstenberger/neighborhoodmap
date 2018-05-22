@@ -4,7 +4,10 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 export class MapContainer extends Component {
 
     state = {
-        listPlaces: []
+        listPlaces: [],
+        showInfoWindow: false,
+        activeMarker: {},
+        selectedPlace: {}
     }
        
     
@@ -21,14 +24,28 @@ export class MapContainer extends Component {
         service.nearbySearch(request, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 this.setState({ listPlaces: results })
-                console.log("Tudo Certo")
-                console.log(this.state)
             } else {
                 console.log("Algo deu errado. Retorno da requisicao:" + status)
             }
         });
 
     }
+
+    onMapClicked = (props) => {
+        if (this.state.showingInfoWindow) {
+            this.setState({
+                showInfoWindow: false,
+                activeMarker: null
+            })
+        }
+    };
+
+    onMarkerClick = (props, marker, evt) =>
+        this.setState({
+            selectedPlace: props,
+            activeMarker: marker,
+            showInfoWindow: true
+        });
     
     render() {
 
@@ -39,9 +56,10 @@ export class MapContainer extends Component {
         return (
             <Map google={this.props.google} 
                 onReady={this.getPlaces}
+                onClick={this.onMapClicked}
                 style={style}
                 initialCenter={{ lat: -23.646156, lng: - 46.669538}}
-                zoom={15}
+                zoom={17}
                 >
                 {this.state.listPlaces.map( (place) => (
                     <Marker
@@ -52,8 +70,15 @@ export class MapContainer extends Component {
                             url: "marker.svg",
                             anchor: new this.props.google.maps.Point(16, 16),
                             scaledSize: new this.props.google.maps.Size(32, 32)
-                        }} />           
+                        }} />        
                 ))}
+                <InfoWindow
+                    marker={this.state.activeMarker}
+                    visible={this.state.showInfoWindow}>
+                    <div>
+                        <h1>{this.state.selectedPlace.name}</h1>
+                    </div>
+                </InfoWindow>   
                 
             </Map>
         );
