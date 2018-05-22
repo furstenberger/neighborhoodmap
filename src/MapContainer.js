@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
+import { Grid, Col, Row, Image } from 'react-bootstrap'
 
 export class MapContainer extends Component {
 
@@ -24,6 +25,7 @@ export class MapContainer extends Component {
         service.nearbySearch(request, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 this.setState({ listPlaces: results })
+                console.log(results)
             } else {
                 console.log("Algo deu errado. Retorno da requisicao:" + status)
             }
@@ -40,12 +42,19 @@ export class MapContainer extends Component {
         }
     };
 
-    onMarkerClick = (props, marker, evt) =>
+    onMarkerClick = (props, marker, evt) => {
         this.setState({
             selectedPlace: props,
             activeMarker: marker,
             showInfoWindow: true
         });
+    
+        console.log(props);
+        console.log(marker);
+
+        console.log(evt);
+
+    }
     
     render() {
 
@@ -63,6 +72,7 @@ export class MapContainer extends Component {
                 >
                 {this.state.listPlaces.map( (place) => (
                     <Marker
+                        key={place.id}
                         onClick={this.onMarkerClick}
                         name={place.name}
                         position={place.geometry.location}
@@ -75,9 +85,23 @@ export class MapContainer extends Component {
                 <InfoWindow
                     marker={this.state.activeMarker}
                     visible={this.state.showInfoWindow}>
-                    <div>
-                        <h1>{this.state.selectedPlace.name}</h1>
-                    </div>
+                    <Grid fluid>
+                        <Row>
+                            <Col xs={4} sm={4} md={4} lg={4}>
+                                {this.state.listPlaces
+                                    .filter( (place) => {
+                                        return place.name === this.state.selectedPlace.name;
+                                    })
+                                    .map( (place) => {
+                                        return <Image src={place.icon} key={place.id} rounded responsive />;
+                                    })
+                                }
+                            </Col>
+                            <Col xs={8} sm={8} md={8} lg={8}>
+                                <div>{this.state.selectedPlace.name}</div>
+                            </Col>
+                        </Row>
+                    </Grid>
                 </InfoWindow>   
                 
             </Map>
