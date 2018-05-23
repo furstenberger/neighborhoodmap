@@ -4,7 +4,24 @@ import {Button, Grid, Col, Row, PageHeader, FormControl} from 'react-bootstrap'
 import MapContainer from './MapContainer'
 
 class App extends Component {
+  
+  constructor(props) {
+    super(props)
+    this.handlePlaces = this.handlePlaces.bind(this)
+  }
+
+  state = {
+    listPlaces: []
+  }
+  
+  handlePlaces = (places) => {
+    this.setState({ listPlaces: places })
+    console.log('este é o estado')
+    console.log(this.state.listPlaces)
+  }
+  
   render() {
+
     return (
       <div>
         <PageHeader className="text-center">Neighborhood Map App</PageHeader>
@@ -22,7 +39,7 @@ class App extends Component {
               <Button bsStyle="default">Default Button</Button>
             </Col>
             <Col xs={9} sm={9} md={9} lg={9} className="fill">
-              <MapContainer />
+              <MapContainer listPlaces={this.state.listPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
             </Col>
           </Row>
         </Grid>

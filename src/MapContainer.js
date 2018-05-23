@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { Grid, Col, Row, Image } from 'react-bootstrap'
 
+
 export class MapContainer extends Component {
 
+    //propTypes to controle what is coming
+    static propTypes = {
+        listPlaces: PropTypes.array.isRequired,
+        handlePlaces: PropTypes.func.isRequired
+    };
+    
     state = {
-        listPlaces: [],
         showInfoWindow: false,
         activeMarker: {},
         selectedPlace: {}
     }
+
+    handlePlaces = (results) => {
+        this.props.handlePlaces(results);
+    }
        
-    
     getPlaces = (mapProps, map) => {
         const {google} = mapProps;
         const service = new google.maps.places.PlacesService(map);
@@ -24,10 +34,10 @@ export class MapContainer extends Component {
         
         service.nearbySearch(request, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                this.setState({ listPlaces: results })
-                console.log(results)
+                return this.handlePlaces(results);
             } else {
-                console.log("Algo deu errado. Retorno da requisicao:" + status)
+                console.log("Algo deu errado. Retorno da requisicao:" + status);
+                return [];
             }
         });
 
@@ -48,11 +58,6 @@ export class MapContainer extends Component {
             activeMarker: marker,
             showInfoWindow: true
         });
-    
-        console.log(props);
-        console.log(marker);
-
-        console.log(evt);
 
     }
     
@@ -70,7 +75,7 @@ export class MapContainer extends Component {
                 initialCenter={{ lat: -23.646156, lng: - 46.669538}}
                 zoom={17}
                 >
-                {this.state.listPlaces.map( (place) => (
+                {this.props.listPlaces.map( (place) => (
                     <Marker
                         key={place.id}
                         onClick={this.onMarkerClick}
@@ -87,7 +92,7 @@ export class MapContainer extends Component {
                     visible={this.state.showInfoWindow}>
                     <Grid fluid>
                         <Row>
-                            {this.state.listPlaces
+                            {this.props.listPlaces
                                 .filter( (place) => {
                                     return place.name === this.state.selectedPlace.name;
                                 })
@@ -108,7 +113,6 @@ export class MapContainer extends Component {
                         </Row>
                     </Grid>
                 </InfoWindow>   
-                
             </Map>
         );
     }
