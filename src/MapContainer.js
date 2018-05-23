@@ -87,19 +87,24 @@ export class MapContainer extends Component {
                     visible={this.state.showInfoWindow}>
                     <Grid fluid>
                         <Row>
-                            <Col xs={4} sm={4} md={4} lg={4}>
-                                {this.state.listPlaces
-                                    .filter( (place) => {
-                                        return place.name === this.state.selectedPlace.name;
-                                    })
-                                    .map( (place) => {
-                                        return <Image src={place.icon} key={place.id} rounded responsive />;
-                                    })
-                                }
-                            </Col>
-                            <Col xs={8} sm={8} md={8} lg={8}>
-                                <div>{this.state.selectedPlace.name}</div>
-                            </Col>
+                            {this.state.listPlaces
+                                .filter( (place) => {
+                                    return place.name === this.state.selectedPlace.name;
+                                })
+                                .map( (place) => {
+                                    return (
+                                        <div key={place.id}>
+                                            <Col xs={4} sm={4} md={4} lg={4}>
+                                                <Image src={place.icon} rounded responsive />
+                                            </Col>
+                                            <Col xs={8} sm={8} md={8} lg={8}>
+                                                <h5>{place.name}</h5>
+                                                <p>Rating: {place.rating}</p>
+                                            </Col>
+                                        </div>
+                                    )
+                                })
+                            } 
                         </Row>
                     </Grid>
                 </InfoWindow>   
