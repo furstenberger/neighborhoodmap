@@ -6,8 +6,14 @@ body {
 
 .fill { 
   height: 100vh;
+  min-height: 100%;
 }
 
 .header-height {
   height: 1.5em;
+}
+
+.fitted {
+  overflow-y: scroll;
+  height: 100vh;
 }
