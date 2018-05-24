@@ -28,7 +28,7 @@ class Filter extends Component {
                 <ButtonGroup justified>
                     <DropdownButton
                         bsStyle="primary"
-                        title="Filter"
+                        title="Choose a Filter"
                         key={1}
                         id="drop-filter"
                     >{filterParams.map((filterName, index) => (
@@ -38,7 +38,12 @@ class Filter extends Component {
                             onClick={this.filterClick.bind(this, filterName)}
                             >{filterName}</MenuItem>
                         ))
-                    }  
+                    }
+                        <MenuItem divider />
+                        <MenuItem 
+                            eventKey="5" 
+                            key="5"
+                            >Clear Filters</MenuItem>  
                     </DropdownButton>
                 </ButtonGroup>
                 <div className="fitted">
