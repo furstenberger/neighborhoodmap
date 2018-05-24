@@ -1,7 +1,18 @@
 import React, {Component} from 'react';
 import { ListGroup, ListGroupItem, DropdownButton, ButtonGroup, MenuItem } from 'react-bootstrap'
+import PropTypes from 'prop-types';
 
 class Filter extends Component {
+
+    //propTypes to controle what is coming
+    static propTypes = {
+        listPlaces: PropTypes.array.isRequired,
+        handlePlaces: PropTypes.func.isRequired
+    };
+
+    handlePlaces = (results) => {
+        this.props.handlePlaces(results);
+    }
     
     itemClick = (place, evt) => {
         evt.preventDefault();
@@ -21,7 +32,7 @@ class Filter extends Component {
 
         let listPlaces = this.props.listPlaces;
 
-        const filterParams = ["Delivery", "Bar", "Open Now", "Rating > 4"]
+        const filterParams = ["Delivery", "Bar", "Open Now", "Rating >= 4"]
 
         return( 
             <div>

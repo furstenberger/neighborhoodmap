@@ -29,7 +29,7 @@ class App extends Component {
         <Grid fluid>
           <Row className="show-grid">      
             <Col xs={3} sm={3} md={3} lg={3} className="fill">
-              <Filter listPlaces={this.state.listPlaces}/>
+              <Filter listPlaces={this.state.listPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
             </Col>
             <Col xs={9} sm={9} md={9} lg={9} className="fill">
               <MapContainer listPlaces={this.state.listPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
