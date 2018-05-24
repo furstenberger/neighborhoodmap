@@ -22,11 +22,48 @@ class Filter extends Component {
     };
 
     filterClick = (filterName) => {
+
+        let places = this.filter(this.props.listPlaces, filterName)
         
-        console.log("filtro selecionado");
-        console.log(filterName);
+        this.handlePlaces(places);
+        
+        console.log("Itens Filtrados");
+        console.log(places);
+        console.log(places.length);
         //console.log(evt.target);
     };
+
+    filter = (listPlaces, filterCriteria) => {
+
+        let filteredPlaces;
+
+        if (filterCriteria === "Delivery") {
+            filteredPlaces = this.props.listPlaces.filter((place) => {
+                return place.types.find((type) => { return type === "meal_delivery" });
+            })
+        }
+
+        if (filterCriteria === "Bar") {
+            filteredPlaces = this.props.listPlaces.filter((place) => {
+                return place.types.find((type) => { return type === "bar"} );
+            })
+        }
+
+        if (filterCriteria === "Open Now") {
+            filteredPlaces = this.props.listPlaces.filter((place) => {
+                return place.opening_hours.open_now === true;
+            })
+        }
+
+        if (filterCriteria === "Rating >= 4") {
+            filteredPlaces = this.props.listPlaces.filter((place) => {
+                return place.rating >= 4;
+            })
+        }
+
+        return filteredPlaces;
+
+    }
 
     render() {
 
