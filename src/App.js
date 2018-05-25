@@ -7,13 +7,15 @@ import Filter from './Filter';
 class App extends Component {
   
   constructor(props) {
-    super(props)
-    this.handlePlaces = this.handlePlaces.bind(this)
+    super(props);
+    this.handlePlaces = this.handlePlaces.bind(this);
+    this.handleAnimation = this.handleAnimation.bind(this);
   }
 
   state = {
     listPlaces: [],
-    filteredPlaces: []
+    filteredPlaces: [],
+    clickedMarker: ""
   }
   
   handlePlaces = (places, isFiltered, isFirstList) => {
@@ -40,6 +42,12 @@ class App extends Component {
     console.log('este é o estado')
     console.log(this.state.listPlaces)
   }
+
+  handleAnimation = (clickedPlaceId) => {
+    console.log("handle animation")
+    console.log(clickedPlaceId)
+    this.setState({ clickedMarker: clickedPlaceId })
+  }
   
   render() {
 
@@ -49,10 +57,16 @@ class App extends Component {
         <Grid fluid>
           <Row className="show-grid">      
             <Col xs={3} sm={3} md={3} lg={3} className="fill">
-              <Filter listPlaces={this.state.filteredPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
+              <Filter 
+                listPlaces={this.state.filteredPlaces} 
+                handlePlaces={this.handlePlaces.bind(this)}
+                handleAnimation={this.handleAnimation.bind(this)}/>
             </Col>
             <Col xs={9} sm={9} md={9} lg={9} className="fill">
-              <MapContainer listPlaces={this.state.filteredPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
+              <MapContainer 
+                listPlaces={this.state.filteredPlaces} 
+                handlePlaces={this.handlePlaces.bind(this)}
+                clickedPlaceId={this.state.clickedMarker}/>
             </Col>
           </Row>
         </Grid>

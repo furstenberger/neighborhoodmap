@@ -7,15 +7,23 @@ class Filter extends Component {
     //propTypes to controle what is coming
     static propTypes = {
         listPlaces: PropTypes.array.isRequired,
-        handlePlaces: PropTypes.func.isRequired
+        handlePlaces: PropTypes.func.isRequired,
+        handleAnimation: PropTypes.func.isRequired
     };
 
     handlePlaces = (results, isFiltered, isFirst) => {
         this.props.handlePlaces(results, isFiltered);
     }
+
+    handleAnimation = (id) => {
+        this.props.handleAnimation(id);
+    }
     
     itemClick = (place, evt) => {
         evt.preventDefault();
+        this.props.handleAnimation(place.id);
+        console.log(place.id);
+        console.log(evt.target);
     };
 
     filterClick = (filterName) => {

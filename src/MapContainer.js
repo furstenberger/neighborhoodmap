@@ -9,7 +9,8 @@ export class MapContainer extends Component {
     //propTypes to controle what is coming
     static propTypes = {
         listPlaces: PropTypes.array.isRequired,
-        handlePlaces: PropTypes.func.isRequired
+        handlePlaces: PropTypes.func.isRequired,
+        clickedPlaceId: PropTypes.string.isRequired
     };
     
     state = {
@@ -84,6 +85,7 @@ export class MapContainer extends Component {
                         onClick={this.onMarkerClick}
                         name={place.name}
                         position={place.geometry.location}
+                        animation={place.id === this.props.clickedPlaceId ? this.props.google.maps.Animation.BOUNCE : null}
                         icon={{
                             url: "marker.svg",
                             anchor: new this.props.google.maps.Point(16, 16),
