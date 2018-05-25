@@ -10,58 +10,56 @@ class Filter extends Component {
         handlePlaces: PropTypes.func.isRequired
     };
 
-    handlePlaces = (results) => {
-        this.props.handlePlaces(results);
+    handlePlaces = (results, isFiltered, isFirst) => {
+        this.props.handlePlaces(results, isFiltered);
     }
     
     itemClick = (place, evt) => {
         evt.preventDefault();
-        console.log("clickado");
-        console.log(place);
-        //console.log(evt.target);
     };
 
     filterClick = (filterName) => {
 
-        let places = this.filter(this.props.listPlaces, filterName)
-        
-        this.handlePlaces(places);
-        
-        console.log("Itens Filtrados");
-        console.log(places);
-        console.log(places.length);
-        //console.log(evt.target);
+        // receive the filter that has been selected and update state
+        let [places, isFiltered] = this.filter(this.props.listPlaces, filterName)
+       
+        this.handlePlaces(places, isFiltered, false);
+
     };
 
     filter = (listPlaces, filterCriteria) => {
 
         let filteredPlaces;
+        // flag to signal that the array of places is from a filter; TRUE if filters apply; FALSE otherwise
+        let filterStatus;
 
         if (filterCriteria === "Delivery") {
+            filterStatus = true;
             filteredPlaces = this.props.listPlaces.filter((place) => {
                 return place.types.find((type) => { return type === "meal_delivery" });
             })
         }
 
         if (filterCriteria === "Bar") {
+            filterStatus = true;
             filteredPlaces = this.props.listPlaces.filter((place) => {
                 return place.types.find((type) => { return type === "bar"} );
             })
         }
 
-        if (filterCriteria === "Open Now") {
-            filteredPlaces = this.props.listPlaces.filter((place) => {
-                return place.opening_hours.open_now === true;
-            })
-        }
-
         if (filterCriteria === "Rating >= 4") {
+            filterStatus = true;
             filteredPlaces = this.props.listPlaces.filter((place) => {
                 return place.rating >= 4;
             })
         }
 
-        return filteredPlaces;
+        if (filterCriteria === "Clear Filters") {
+            filterStatus = false;
+            filteredPlaces = this.props.listPlaces;
+        }
+
+        return [filteredPlaces, filterStatus];
 
     }
 
@@ -91,6 +89,7 @@ class Filter extends Component {
                         <MenuItem 
                             eventKey="5" 
                             key="5"
+                            onClick={this.filterClick.bind(this, "Clear Filters")}
                             >Clear Filters</MenuItem>  
                     </DropdownButton>
                 </ButtonGroup>

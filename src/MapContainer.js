@@ -18,8 +18,8 @@ export class MapContainer extends Component {
         selectedPlace: {}
     }
 
-    handlePlaces = (results) => {
-        this.props.handlePlaces(results);
+    handlePlaces = (results, isFiltered, isFirst) => {
+        this.props.handlePlaces(results, isFiltered, isFirst);
     }
        
     getPlaces = (mapProps, map) => {
@@ -34,7 +34,10 @@ export class MapContainer extends Component {
         
         service.nearbySearch(request, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                return this.handlePlaces(results);
+                // pass full list of places with FALSE flag for filteredPlaces
+                // the app will deal with filtered states based on this inital state results and other filters applied
+                // this way this service will only run once, saving API data consumption
+                return this.handlePlaces(results, false, true);
             } else {
                 console.log("Algo deu errado. Retorno da requisicao:" + status);
                 return [];

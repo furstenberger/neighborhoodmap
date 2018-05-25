@@ -12,11 +12,31 @@ class App extends Component {
   }
 
   state = {
-    listPlaces: []
+    listPlaces: [],
+    filteredPlaces: []
   }
   
-  handlePlaces = (places) => {
-    this.setState({ listPlaces: places })
+  handlePlaces = (places, isFiltered, isFirstList) => {
+    
+    //places: array with places' markers fetched from google API
+    //isFitlered: boolean with filter status. If list is filtered, then TRUE. FALSE otherwise
+    //isFirstList: boolean to identify if places array is the first fetch from maps API. TRUE if the list is first fetch. FALSE otherwise
+
+    if (isFirstList && !isFiltered) {
+      //Set the first list places array with all markers fetched from maps API. 
+      this.setState({ listPlaces: places,
+                      filteredPlaces: places        
+      })
+    }
+
+    // If this is not the first list, then render a filtered list. In case reset filters dropdown is clicked
+    // then reset state to original total list places
+    if (isFiltered) {
+      this.setState({ filteredPlaces: places })
+    } else {
+      this.setState({ filteredPlaces: this.state.listPlaces })
+    }
+
     console.log('este é o estado')
     console.log(this.state.listPlaces)
   }
@@ -29,10 +49,10 @@ class App extends Component {
         <Grid fluid>
           <Row className="show-grid">      
             <Col xs={3} sm={3} md={3} lg={3} className="fill">
-              <Filter listPlaces={this.state.listPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
+              <Filter listPlaces={this.state.filteredPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
             </Col>
             <Col xs={9} sm={9} md={9} lg={9} className="fill">
-              <MapContainer listPlaces={this.state.listPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
+              <MapContainer listPlaces={this.state.filteredPlaces} handlePlaces={this.handlePlaces.bind(this)}/>
             </Col>
           </Row>
         </Grid>
