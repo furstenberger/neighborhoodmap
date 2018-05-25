@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { Grid, Col, Row, Image } from 'react-bootstrap'
+import { Grid, Col, Row, Image, Alert } from 'react-bootstrap'
 
 
 export class MapContainer extends Component {
 
-    //propTypes to controle what is coming
+    //propTypes to control what is coming
     static propTypes = {
         listPlaces: PropTypes.array.isRequired,
         handlePlaces: PropTypes.func.isRequired,
@@ -14,15 +14,18 @@ export class MapContainer extends Component {
     };
     
     state = {
-        showInfoWindow: false,
-        activeMarker: {},
-        selectedPlace: {}
+        showInfoWindow: false,  //flag to control InfoWindow flux
+        activeMarker: {},       //active marker object 
+        selectedPlace: {},      //selected place object
+        requestError: false     //error handler
     }
 
+    //handle places method to update parent state
     handlePlaces = (results, isFiltered, isFirst) => {
         this.props.handlePlaces(results, isFiltered, isFirst);
     }
-       
+    
+    //this method is responsible to fetch all places from google API. Markers will be rendered afterwards.
     getPlaces = (mapProps, map) => {
         const {google} = mapProps;
         const service = new google.maps.places.PlacesService(map);
@@ -38,17 +41,19 @@ export class MapContainer extends Component {
                 // pass full list of places with FALSE flag for filteredPlaces
                 // the app will deal with filtered states based on this inital state results and other filters applied
                 // this way this service will only run once, saving API data consumption
+                this.setState({ requestError: false })
                 return this.handlePlaces(results, false, true);
             } else {
-                console.log("Algo deu errado. Retorno da requisicao:" + status);
+                this.setState({ requestError: true})
                 return [];
             }
         });
 
     }
 
+    //clean InfoWindow in case user clicks outside map
     onMapClicked = (props) => {
-        if (this.state.showingInfoWindow) {
+        if (this.state.showInfoWindow) {
             this.setState({
                 showInfoWindow: false,
                 activeMarker: null
@@ -56,6 +61,7 @@ export class MapContainer extends Component {
         }
     };
 
+    //show InfoWindow when user clicks on Marker
     onMarkerClick = (props, marker, evt) => {
         this.setState({
             selectedPlace: props,
@@ -77,8 +83,13 @@ export class MapContainer extends Component {
                 onClick={this.onMapClicked}
                 style={style}
                 initialCenter={{ lat: -23.646156, lng: - 46.669538}}
-                zoom={17}
+                zoom={15}
                 >
+                {this.state.requestStatus && (
+                    <Alert bsStyle="warning">
+                        <strong>Oh Snap!</strong> Something went wrong with your marker request. Plase reload page!
+                    </Alert>
+                )}
                 {this.props.listPlaces.map( (place) => (
                     <Marker
                         key={place.id}

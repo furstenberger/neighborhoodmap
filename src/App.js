@@ -13,9 +13,9 @@ class App extends Component {
   }
 
   state = {
-    listPlaces: [],
-    filteredPlaces: [],
-    clickedMarker: ""
+    listPlaces: [],     // list of default places fetched from Google API
+    filteredPlaces: [], // list of filtered chosen places 
+    clickedMarker: ""   // marker that is clicked to receive bouncing animation
   }
   
   handlePlaces = (places, isFiltered, isFirstList) => {
@@ -38,11 +38,9 @@ class App extends Component {
     } else {
       this.setState({ filteredPlaces: this.state.listPlaces })
     }
-
-    console.log('este é o estado')
-    console.log(this.state.listPlaces)
   }
 
+  // handle the components that are clicked for bouncing animation
   handleAnimation = (clickedPlaceId) => {
     console.log("handle animation")
     console.log(clickedPlaceId)

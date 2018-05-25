@@ -4,28 +4,30 @@ import PropTypes from 'prop-types';
 
 class Filter extends Component {
 
-    //propTypes to controle what is coming
+    //propTypes to control what is coming
     static propTypes = {
         listPlaces: PropTypes.array.isRequired,
         handlePlaces: PropTypes.func.isRequired,
         handleAnimation: PropTypes.func.isRequired
     };
 
+    //handle places method to update parent state
     handlePlaces = (results, isFiltered, isFirst) => {
         this.props.handlePlaces(results, isFiltered);
     }
 
+    //handle animation method to update parent state
     handleAnimation = (id) => {
         this.props.handleAnimation(id);
     }
     
+    //click method handler from list animation filter
     itemClick = (place, evt) => {
         evt.preventDefault();
         this.props.handleAnimation(place.id);
-        console.log(place.id);
-        console.log(evt.target);
     };
 
+    //click method handler from list filtration
     filterClick = (filterName) => {
 
         // receive the filter that has been selected and update state
@@ -35,6 +37,7 @@ class Filter extends Component {
 
     };
 
+    //filter method with all available filters. Provide also a filter cleaning option
     filter = (listPlaces, filterCriteria) => {
 
         let filteredPlaces;
@@ -75,7 +78,7 @@ class Filter extends Component {
 
         let listPlaces = this.props.listPlaces;
 
-        const filterParams = ["Delivery", "Bar", "Open Now", "Rating >= 4"]
+        const filterParams = ["Delivery", "Bar", "Rating >= 4"]
 
         return( 
             <div>
