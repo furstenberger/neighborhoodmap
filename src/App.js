@@ -66,7 +66,7 @@ class App extends Component {
                 handlePlaces={this.handlePlaces.bind(this)}
                 clickedPlaceId={this.state.clickedMarker}/>
             </Col>
-          </Row>
+          </Row> 
         </Grid>
       </div>
     );
