@@ -17,3 +17,60 @@ body {
   overflow-y: scroll;
   height: 100vh;
 }
+
+@media (max-width: 320px) {
+  .fitted {
+    overflow-y: scroll;
+    height: 100vh;
+    font-size: 0.4em;
+  }
+
+  #drop-filter {
+    font-size: 0.4em;
+  }
+}
+@media (min-width: 320.01px) and (max-width: 375px) {
+  .fitted {
+    overflow-y: scroll;
+    height: 100vh;
+    font-size: 0.5em;
+  }
+
+  #drop-filter {
+    font-size: 0.5em;
+    height: 40px;
+  }
+}
+@media (min-width: 375.01px) and (max-width: 425px) {
+  .fitted {
+    overflow-y: scroll;
+    height: 100vh;
+    font-size: 0.7em;
+  }
+
+  #drop-filter {
+    font-size: 0.65em;
+    height: 50px;
+  }
+}
+@media (min-width: 425.01px) and (max-width: 768px) {
+  .fitted {
+    overflow-y: scroll;
+    height: 100vh;
+    font-size: 0.9em;
+  }
+
+  #drop-filter {
+    font-size: 0.9em;
+    height: 50px;
+  }  
+}
+@media (min-width: 768.01px) {
+  .fitted {
+    overflow-y: scroll;
+    height: 100vh;
+  }
+  #drop-filter {
+    height: 50px;
+  }  
+}

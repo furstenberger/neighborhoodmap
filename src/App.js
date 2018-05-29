@@ -54,13 +54,13 @@ class App extends Component {
         <PageHeader className="text-center">Neighborhood Map App</PageHeader>
         <Grid fluid>
           <Row className="show-grid">      
-            <Col xs={3} sm={3} md={3} lg={3} className="fill">
+            <Col xs={4} sm={3} md={3} lg={3} className="fill">
               <Filter 
                 listPlaces={this.state.filteredPlaces} 
                 handlePlaces={this.handlePlaces.bind(this)}
                 handleAnimation={this.handleAnimation.bind(this)}/>
             </Col>
-            <Col xs={9} sm={9} md={9} lg={9} className="fill">
+            <Col xs={8} sm={9} md={9} lg={9} className="fill">
               <MapContainer 
                 listPlaces={this.state.filteredPlaces} 
                 handlePlaces={this.handlePlaces.bind(this)}
