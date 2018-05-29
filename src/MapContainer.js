@@ -28,8 +28,8 @@ export class MapContainer extends Component {
         activeMarker: {},       //active marker object 
         selectedPlace: {},      //selected place object
         requestError: false,    //error handler
-        fourSquareItem: []
-
+        fourSquareItem: [],
+        fourSquareError: false
     }
 
     //handle places method to update parent state
@@ -98,12 +98,17 @@ export class MapContainer extends Component {
         }
 
         // once the request return a value, pass to state its response and render the window with
-        // the response for info rendering
+        // the response for info rendering. Update error flag to pass an Error Props to Foursquare
+        // component to render an error message
         foursquare.venues.getVenues(params)
             .then(res => {
-                this.setState({ fourSquareItem: res.response.venues });
+                this.setState({ fourSquareItem: res.response.venues,
+                                fourSquareError: false 
+                            });
             })
-            .catch((err) => { alert("Unable to fetch information from Foursquare. Try again in a few minutes.") });
+            .catch((err) => {
+                this.setState({ fourSquareError: true });
+                alert("Unable to fetch information from Foursquare. Try again in a few minutes.") });
 
     }
     
@@ -158,7 +163,9 @@ export class MapContainer extends Component {
                                             <Col xs={8} sm={8} md={8} lg={8}>
                                                 <h5>{place.name}</h5>
                                                 <p>Rating: {place.rating}</p>
-                                                <Foursquare placeInfo={this.state.fourSquareItem}/>
+                                                <Foursquare 
+                                                    placeInfo={this.state.fourSquareItem} 
+                                                    requestStatus={this.state.fourSquareError}/>
                                             </Col>
                                         </div>
                                     )
