@@ -58,11 +58,6 @@ class App extends Component {
     // If this is not the first list, then render a filtered list. In case reset filters dropdown is clicked
     // then reset state to original total list places
     if (isFiltered) {
-
-      let marker = this.markerList.find( marker => {
-            return marker.props.id === clickedPlace
-        });
-
       this.setState({ filteredPlaces: places })
     } else {
       this.setState({ filteredPlaces: this.state.listPlaces })
@@ -71,7 +66,26 @@ class App extends Component {
 
   // handle the components that are clicked for bouncing animation
   handleAnimation = (clickedPlaceId) => {
-    this.setState({ clickedMarker: clickedPlaceId })
+
+    let marker = this.markerList.find(marker => {
+      return marker.props.id === clickedPlaceId.id
+    });
+
+
+    console.log("Marker");
+    console.log(marker);
+    console.log("clicked place id");
+    console.log(clickedPlaceId.id);
+
+    if (marker) {
+      this.setState({ 
+        clickedMarker: clickedPlaceId,
+        selectedPlace: marker.props,
+        infoMarker: marker,
+        showInfoWindow: true })
+    } else {
+      this.setState({ clickedMarker: clickedPlaceId })
+    }
   }
 
   // handle the components that are clicked for bouncing animation
