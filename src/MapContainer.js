@@ -20,17 +20,22 @@ export class MapContainer extends Component {
     static propTypes = {
         listPlaces: PropTypes.array.isRequired,
         handlePlaces: PropTypes.func.isRequired,
-        clickedPlaceId: PropTypes.string.isRequired
+        clickedPlace: PropTypes.object.isRequired
     };
     
-    state = {
+    constructor() {
+        super();
+        this.markerList = [];
+    }
+
+    /* state = {
         showInfoWindow: false,  //flag to control InfoWindow flux
         activeMarker: {},       //active marker object 
         selectedPlace: {},      //selected place object
         requestError: false,    //error handler
         fourSquareItem: [],
         fourSquareError: false
-    }
+    } */
 
     //handle places method to update parent state
     handlePlaces = (results, isFiltered, isFirst) => {
@@ -53,10 +58,10 @@ export class MapContainer extends Component {
                 // pass full list of places with FALSE flag for filteredPlaces
                 // the app will deal with filtered states based on this inital state results and other filters applied
                 // this way this service will only run once, saving API data consumption
-                this.setState({ requestError: false })
+                this.props.handleError(status, true);
                 return this.handlePlaces(results, false, true);
             } else {
-                this.setState({ requestError: true})
+                this.props.handleError(status, true);
                 return [];
             }
         });
@@ -88,7 +93,6 @@ export class MapContainer extends Component {
 
     updateFoursquareQuery = (query) => {
 
-        //this.setState({fourSquareQuery: query})
         // set params to execute Foursquare place query
         const params = {
             "ll": `${initialCenter.lat},${initialCenter.lng}`,
@@ -111,6 +115,33 @@ export class MapContainer extends Component {
                 alert("Unable to fetch information from Foursquare. Try again in a few minutes.") });
 
     }
+
+    componentDidUpdate() {
+
+        let clickedPlace = this.props.clickedPlace.id;
+
+        let marker = this.markerList.find( marker => {
+            return marker.props.id === clickedPlace
+        });
+
+        //this.props.handleInfoWindow(marker);
+
+        /* if (marker) {
+        
+            this.setState({
+                selectedPlace: marker.props,
+                activeMarker: marker,
+                showInfoWindow: true
+            });
+        } */
+
+        /* //if (marker) marker.props.onClick(marker.props, marker, marker.evt);
+        if (marker) marker.props.onClick(marker.props, marker, marker.evt);
+
+        console.log('Clickado da lista')
+        console.log(marker) */
+
+    }
     
     render() {
 
@@ -126,18 +157,20 @@ export class MapContainer extends Component {
                 initialCenter={initialCenter}
                 zoom={15}
                 >
-                {this.state.requestStatus && (
+                {this.props.requestStatus && (
                     <Alert bsStyle="warning">
                         <strong>Oh Snap!</strong> Something went wrong with your marker request. Plase reload page!
                     </Alert>
                 )}
-                {this.props.listPlaces.map( (place) => (
+                {this.props.listPlaces.map( (place, index) => (
                     <Marker
                         key={place.id}
+                        id={place.id}
+                        ref={(ref) => this.markerList[index] = ref}
                         onClick={this.onMarkerClick}
                         name={place.name}
                         position={place.geometry.location}
-                        animation={place.id === this.props.clickedPlaceId ? this.props.google.maps.Animation.BOUNCE : null}
+                        animation={place.id === this.props.clickedPlace.id ? this.props.google.maps.Animation.BOUNCE : null}
                         icon={{
                             url: "marker.svg",
                             anchor: new this.props.google.maps.Point(16, 16),
@@ -145,14 +178,14 @@ export class MapContainer extends Component {
                         }} />        
                 ))}
                 <InfoWindow
-                    marker={this.state.activeMarker}
-                    visible={this.state.showInfoWindow}
+                    marker={this.props.infoMarker}
+                    visible={this.props.showInfoWindow}
                     >
                     <Grid fluid>
                         <Row>
                             {this.props.listPlaces
                                 .filter( (place) => {
-                                    return place.name === this.state.selectedPlace.name;
+                                    return place.name === this.props.clickedPlace.name;
                                 })
                                 .map( (place) => {
                                     return (
