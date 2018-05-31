@@ -79,17 +79,14 @@ export class MapContainer extends Component {
 
     }
 
-    
+    componentDidMount() {
 
-    componentDidUpdate() {
+        this.props.updateMarkerList(this.markerList);
+        
 
-        let clickedPlace = this.props.clickedPlace.id;
+        //console.log(marker);
 
-        let marker = this.markerList.find( marker => {
-            return marker.props.id === clickedPlace
-        });
-
-        //this.props.handleInfoWindow(marker);
+        //if (marker) marker.marker.onClick(marker.props, marker, marker.evt, true);
 
         /* if (marker) {
         

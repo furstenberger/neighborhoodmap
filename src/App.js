@@ -21,6 +21,8 @@ class App extends Component {
     this.handleInfoWindow = this.handleInfoWindow.bind(this);
     this.handleFoursquareQuery = this.handleFoursquareQuery.bind(this);
     this.handleError = this.handleError.bind(this);
+    this.updateMarkerList = this.updateMarkerList.bind(this);
+    this.markerList = []
   }
 
   state = {
@@ -56,6 +58,11 @@ class App extends Component {
     // If this is not the first list, then render a filtered list. In case reset filters dropdown is clicked
     // then reset state to original total list places
     if (isFiltered) {
+
+      let marker = this.markerList.find( marker => {
+            return marker.props.id === clickedPlace
+        });
+
       this.setState({ filteredPlaces: places })
     } else {
       this.setState({ filteredPlaces: this.state.listPlaces })
@@ -117,6 +124,15 @@ class App extends Component {
     this.setState({ requestError: flag });
 
   }
+
+  updateMarkerList(markers) {
+
+    this.markerList = markers;
+
+    console.log("direto do App");
+    console.log(this.markerList);
+
+  }
   
   render() {
 
@@ -145,6 +161,7 @@ class App extends Component {
                 handleInfoWindow={this.handleInfoWindow.bind(this)}
                 handleFoursquareQuery={this.handleFoursquareQuery.bind(this)}
                 handleError={this.handleError.bind(this)}
+                updateMarkerList={this.updateMarkerList.bind(this)}
                 />
             </Col>
           </Row> 
