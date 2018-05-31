@@ -70,22 +70,16 @@ export class MapContainer extends Component {
 
     //clean InfoWindow in case user clicks outside map
     onMapClicked = (props) => {
-        if (this.state.showInfoWindow) {
-            this.setState({
-                showInfoWindow: false,
-                activeMarker: null
-            })
-        }
+        // call infowindow handler to disable views
+        if (this.props.showInfoWindow) this.props.handleInfoWindow(props, null, null, false);
     };
 
     //show InfoWindow when user clicks on Marker
     onMarkerClick = (props, marker, evt) => {
-        this.setState({
-            selectedPlace: props,
-            activeMarker: marker,
-            showInfoWindow: true
-        });
-
+        
+        // call handler with all needed information to render InfoWindow
+        this.props.handleInfoWindow(props, marker, evt, true);
+        
         // When a marker is clicked, call the function to fetch foursquare data
         this.updateFoursquareQuery(marker.name);
 
@@ -185,7 +179,7 @@ export class MapContainer extends Component {
                         <Row>
                             {this.props.listPlaces
                                 .filter( (place) => {
-                                    return place.name === this.props.clickedPlace.name;
+                                    return place.name === this.props.selectedPlace.name;
                                 })
                                 .map( (place) => {
                                     return (
@@ -196,9 +190,9 @@ export class MapContainer extends Component {
                                             <Col xs={8} sm={8} md={8} lg={8}>
                                                 <h5>{place.name}</h5>
                                                 <p>Rating: {place.rating}</p>
-                                                <Foursquare 
+                                                {/* <Foursquare 
                                                     placeInfo={this.state.fourSquareItem} 
-                                                    requestStatus={this.state.fourSquareError}/>
+                                                    requestStatus={this.state.fourSquareError}/> */}
                                             </Col>
                                         </div>
                                     )

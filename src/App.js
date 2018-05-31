@@ -59,12 +59,20 @@ class App extends Component {
   }
 
   // handle the components that are clicked for bouncing animation
-  handleInfoWindow = (marker) => {
+  // props:       if a marker was clicked, it will receive its props. If map was clicked, it will also receive props
+  // marker:      if a marker was clicked, it will receive the clicked marker object
+  // evt:         if a marker was clickedevent identifier object
+  // isDisplayed: if map is clicked, this is flag will disable InfoWindow display (all other objects receive null values)
+  handleInfoWindow = (props, marker, evt, isDisplayed) => {
     
-    console.log('should store marker on app state')
-    console.log(marker)
-    
-    if (marker) this.setState({ infoMarker: marker })
+    console.log("passou qui")
+
+    this.setState({
+      selectedPlace: props,
+      infoMarker: marker,
+      showInfoWindow: isDisplayed
+    });
+
   }
 
   handleError = (error, flag) => {
@@ -94,6 +102,7 @@ class App extends Component {
                 requestStatus={this.state.requestError}
                 infoMarker={this.state.infoMarker}
                 showInfoWindow={this.state.showInfoWindow}
+                selectedPlace={this.state.selectedPlace}
                 handlePlaces={this.handlePlaces.bind(this)}
                 handleInfoWindow={this.handleInfoWindow.bind(this)}
                 handleError={this.handleError.bind(this)}
