@@ -4,13 +4,7 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { Grid, Col, Row, Image, Alert } from 'react-bootstrap'
 import Foursquare from './Foursquare';
 
-var foursquare = require('react-foursquare')({
-    clientID: 'QXDO02YNT0LWO0D4APKE0MGEQ3HCFATJHB3NENJ244AEXFUE',
-    clientSecret: 'AGS3PQD3DVH212IVD4T3X3OH1ZHJSMK015BVUPRYJJTLX0KW'
-}); 
-
-
-let initialCenter = { lat: -23.646156, lng: - 46.669538}
+let initialCenter = { lat: -23.646156, lng: - 46.669538 }
 let queryRadius = '1000';
 let queryType = 'restaurant'
 
@@ -81,34 +75,11 @@ export class MapContainer extends Component {
         this.props.handleInfoWindow(props, marker, evt, true);
         
         // When a marker is clicked, call the function to fetch foursquare data
-        this.updateFoursquareQuery(marker.name);
+        this.props.handleFoursquareQuery(marker.name);
 
     }
 
-    updateFoursquareQuery = (query) => {
-
-        // set params to execute Foursquare place query
-        const params = {
-            "ll": `${initialCenter.lat},${initialCenter.lng}`,
-            "radius": queryRadius,
-            "query": query,
-            "limit": 1
-        }
-
-        // once the request return a value, pass to state its response and render the window with
-        // the response for info rendering. Update error flag to pass an Error Props to Foursquare
-        // component to render an error message
-        foursquare.venues.getVenues(params)
-            .then(res => {
-                this.setState({ fourSquareItem: res.response.venues,
-                                fourSquareError: false 
-                            });
-            })
-            .catch((err) => {
-                this.setState({ fourSquareError: true });
-                alert("Unable to fetch information from Foursquare. Try again in a few minutes.") });
-
-    }
+    
 
     componentDidUpdate() {
 
@@ -190,9 +161,9 @@ export class MapContainer extends Component {
                                             <Col xs={8} sm={8} md={8} lg={8}>
                                                 <h5>{place.name}</h5>
                                                 <p>Rating: {place.rating}</p>
-                                                {/* <Foursquare 
-                                                    placeInfo={this.state.fourSquareItem} 
-                                                    requestStatus={this.state.fourSquareError}/> */}
+                                                {<Foursquare 
+                                                    placeInfo={this.props.fourSquareItem} 
+                                                    requestStatus={this.props.fourSquareError}/>}
                                             </Col>
                                         </div>
                                     )
