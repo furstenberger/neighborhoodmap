@@ -42,8 +42,6 @@ class App extends Component {
 
   // handle the components that are clicked for bouncing animation
   handleAnimation = (clickedPlaceId) => {
-    console.log("handle animation")
-    console.log(clickedPlaceId)
     this.setState({ clickedMarker: clickedPlaceId })
   }
   

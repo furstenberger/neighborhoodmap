@@ -22,6 +22,11 @@ export class MapContainer extends Component {
         handlePlaces: PropTypes.func.isRequired,
         clickedPlaceId: PropTypes.string.isRequired
     };
+
+    constructor() {
+        super();
+        this.markerList = [];
+    }
     
     state = {
         showInfoWindow: false,  //flag to control InfoWindow flux
@@ -111,6 +116,20 @@ export class MapContainer extends Component {
                 alert("Unable to fetch information from Foursquare. Try again in a few minutes.") });
 
     }
+
+    componentDidMount() {
+
+        this.props.updateMarkerList(this.markerList);
+        
+        let marker = this.markerList.find(marker => {
+            return marker.props.id === this.props.clickedPlaceId
+        });
+
+        console.log(marker)
+
+        if (marker) marker.props.onClick(marker.props, marker.marker, marker.evt);
+
+    }
     
     render() {
 
@@ -131,11 +150,13 @@ export class MapContainer extends Component {
                         <strong>Oh Snap!</strong> Something went wrong with your marker request. Plase reload page!
                     </Alert>
                 )}
-                {this.props.listPlaces.map( (place) => (
+                {this.props.listPlaces.map( (place, index) => (
                     <Marker
                         key={place.id}
+                        id={place.id}
                         onClick={this.onMarkerClick}
                         name={place.name}
+                        ref={(ref) => this.markerList[index] = ref}
                         position={place.geometry.location}
                         animation={place.id === this.props.clickedPlaceId ? this.props.google.maps.Animation.BOUNCE : null}
                         icon={{
