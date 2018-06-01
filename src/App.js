@@ -104,6 +104,8 @@ class App extends Component {
       showInfoWindow: isDisplayed
     });
 
+    this.handleFoursquareQuery(marker.name)
+
   }
 
   handleFoursquareQuery = (query) => {
