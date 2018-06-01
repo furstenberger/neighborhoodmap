@@ -22,15 +22,6 @@ export class MapContainer extends Component {
         this.markerList = [];
     }
 
-    /* state = {
-        showInfoWindow: false,  //flag to control InfoWindow flux
-        activeMarker: {},       //active marker object 
-        selectedPlace: {},      //selected place object
-        requestError: false,    //error handler
-        fourSquareItem: [],
-        fourSquareError: false
-    } */
-
     //handle places method to update parent state
     handlePlaces = (results, isFiltered, isFirst) => {
         this.props.handlePlaces(results, isFiltered, isFirst);
@@ -70,38 +61,17 @@ export class MapContainer extends Component {
 
     //show InfoWindow when user clicks on Marker
     onMarkerClick = (props, marker, evt) => {
-        
         // call handler with all needed information to render InfoWindow
         this.props.handleInfoWindow(props, marker, evt, true);
-        
-        // When a marker is clicked, call the function to fetch foursquare data
-        this.props.handleFoursquareQuery(marker.name);
-
     }
 
+    // In order to not toggle infinite setState calls, the option was to set refs to all markers in the component and store
+    // them in a list within the App component. As this will only render once when Mapcontainer mounts, all marker objects
+    // are available for the parent component to perform any kind of manipulation. This is how the parent component can 
+    // communicate with child elements to set different behaviors within the react-google-maps library
     componentDidMount() {
-
+        
         this.props.updateMarkerList(this.markerList);
-        
-
-        //console.log(marker);
-
-        //if (marker) marker.marker.onClick(marker.props, marker, marker.evt, true);
-
-        /* if (marker) {
-        
-            this.setState({
-                selectedPlace: marker.props,
-                activeMarker: marker,
-                showInfoWindow: true
-            });
-        } */
-
-        /* //if (marker) marker.props.onClick(marker.props, marker, marker.evt);
-        if (marker) marker.props.onClick(marker.props, marker, marker.evt);
-
-        console.log('Clickado da lista')
-        console.log(marker) */
 
     }
     
@@ -158,9 +128,10 @@ export class MapContainer extends Component {
                                             <Col xs={8} sm={8} md={8} lg={8}>
                                                 <h5>{place.name}</h5>
                                                 <p>Rating: {place.rating}</p>
-                                                {<Foursquare 
-                                                    placeInfo={this.props.fourSquareItem} 
-                                                    requestStatus={this.props.fourSquareError}/>}
+                                                <Foursquare 
+                                                    placeInfo={this.props.fourSquareItem}
+                                                    requestStatus={this.props.fourSquareError}
+                                                />
                                             </Col>
                                         </div>
                                     )

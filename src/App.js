@@ -22,7 +22,7 @@ class App extends Component {
     this.handleFoursquareQuery = this.handleFoursquareQuery.bind(this);
     this.handleError = this.handleError.bind(this);
     this.updateMarkerList = this.updateMarkerList.bind(this);
-    this.markerList = []
+    this.markerList = [] // this is an marker object array that allows object manipulation from parent components for the react-google-maps library
   }
 
   state = {
@@ -30,12 +30,12 @@ class App extends Component {
     filteredPlaces: [],     // list of filtered chosen places 
     clickedMarker: {},      // marker that is clicked to receive bouncing animation
     infoMarker: {},         // marker that is designated to render a InfoWindow
-    showInfoWindow: false,  //flag to control InfoWindow flux
-    activeMarker: {},       //active marker object 
-    selectedPlace: {},      //selected place object
-    requestError: false,    //error handler
-    fourSquareItem: [],
-    fourSquareError: false
+    showInfoWindow: false,  // flag to control InfoWindow flux
+    activeMarker: {},       // active marker object 
+    selectedPlace: {},      // selected place object
+    requestError: false,    // error handler
+    fourSquareItem: [],     // Foursquare item fetched from the API
+    fourSquareError: false  // Error flag to handle error messages from the API
   }
 
   // All state handlers are controlled by the App component, who will call setState accordingly.
@@ -64,25 +64,20 @@ class App extends Component {
     }
   }
 
-  // handle the components that are clicked for bouncing animation
+  // handle the components that are clicked for bouncing animation and infowindow
   handleAnimation = (clickedPlaceId) => {
 
     let marker = this.markerList.find(marker => {
       return marker.props.id === clickedPlaceId.id
     });
 
-
-    console.log("Marker");
-    console.log(marker);
-    console.log("clicked place id");
-    console.log(clickedPlaceId.id);
-
+    
+    // If marker is found in the marker list, it means that an item in the list was clicked and it has a corresponding marker on the map
+    // therefore, call handle info window method. Otherwise, just toggle animation
     if (marker) {
+      this.handleInfoWindow(marker.props, marker.marker, marker.evt, true)
       this.setState({ 
-        clickedMarker: clickedPlaceId,
-        selectedPlace: marker.props,
-        infoMarker: marker.marker,
-        showInfoWindow: true })
+        clickedMarker: clickedPlaceId})
     } else {
       this.setState({ clickedMarker: clickedPlaceId })
     }
@@ -95,21 +90,33 @@ class App extends Component {
   // isDisplayed: if map is clicked, this is flag will disable InfoWindow display (all other objects receive null values)
   handleInfoWindow = (props, marker, evt, isDisplayed) => {
     
-    console.log("passou qui")
-    console.log(marker)
+    // If the Infowindow is set to show in the map, it will call the Foursquare API to fetch data or handle errors
+    // When the values are returned, it will call setState to update all state variables at once and render the component
+    if (isDisplayed) {
 
-    this.setState({
-      selectedPlace: props,
-      infoMarker: marker,
-      showInfoWindow: isDisplayed
-    });
+      let [fourSquareItem, fourSquareError] = this.handleFoursquareQuery(marker.name);
 
-    this.handleFoursquareQuery(marker.name)
+      this.setState({
+        selectedPlace: props,
+        infoMarker: marker,
+        showInfoWindow: isDisplayed,
+        fourSquareItem: fourSquareItem,
+        fourSquareError: fourSquareError
+      });
 
+    } else {    
+        this.setState({
+          selectedPlace: props,
+          infoMarker: marker,
+          showInfoWindow: isDisplayed
+        });
+    }
   }
 
   handleFoursquareQuery = (query) => {
 
+    let fourSquareItem, fourSquareError;
+    
     // set params to execute Foursquare place query
     const params = {
       "ll": `${initialCenter.lat},${initialCenter.lng}`,
@@ -121,34 +128,35 @@ class App extends Component {
     // once the request return a value, pass to state its response and render the window with
     // the response for info rendering. Update error flag to pass an Error Props to Foursquare
     // component to render an error message
+    // When daily quota exceeded, the server returns a 429 error code, which is treated accordingly
     foursquare.venues.getVenues(params)
       .then(res => {
-        this.setState({
-          fourSquareItem: res.response.venues,
-          fourSquareError: false
-        });
+        console.log(res.response.venues)
+        if (res.meta.code === 429) {
+          fourSquareItem = [];
+          fourSquareError = true;
+        } else {
+          fourSquareItem = res.response.venues;
+          fourSquareError = false;
+        }
       })
       .catch((err) => {
-        this.setState({ fourSquareError: true });
-        alert("Unable to fetch information from Foursquare. Try again in a few minutes.")
+        console.log("catch error")
+        fourSquareItem = [];
+        fourSquareError = true;
       });
+
+    return [fourSquareItem, fourSquareError];
 
   }
 
   handleError = (error, flag) => {
     //handle error type and error flag. The flag is set to TRUE for any error and FALSE otherwise
-    console.log(error);
     this.setState({ requestError: flag });
-
   }
 
   updateMarkerList(markers) {
-
     this.markerList = markers;
-
-    console.log("direto do App");
-    console.log(this.markerList);
-
   }
   
   render() {
