@@ -81,7 +81,7 @@ class App extends Component {
       this.setState({ 
         clickedMarker: clickedPlaceId,
         selectedPlace: marker.props,
-        infoMarker: marker,
+        infoMarker: marker.marker,
         showInfoWindow: true })
     } else {
       this.setState({ clickedMarker: clickedPlaceId })
@@ -96,6 +96,7 @@ class App extends Component {
   handleInfoWindow = (props, marker, evt, isDisplayed) => {
     
     console.log("passou qui")
+    console.log(marker)
 
     this.setState({
       selectedPlace: props,
