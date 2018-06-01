@@ -15,16 +15,11 @@ class Filter extends Component {
     handlePlaces = (results, isFiltered, isFirst) => {
         this.props.handlePlaces(results, isFiltered);
     }
-
-    //handle animation method to update parent state
-    handleAnimation = (id) => {
-        this.props.handleAnimation(id);
-    }
     
     //click method handler from list animation filter
     itemClick = (place, evt) => {
         evt.preventDefault();
-        this.props.handleAnimation(place.id);
+        this.props.handleAnimation(place);
     };
 
     //click method handler from list filtration
